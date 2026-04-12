@@ -69,10 +69,7 @@ function AuthorityApp() {
                             {loading ? "VERIFYING..." : "ACCESS COMMAND"}
                         </button>
                     </div>
-                    <div className="info-banner" style={{ marginTop: "1.5rem", background: 'rgba(124, 58, 237, 0.05)', borderColor: 'var(--purple)' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', display: 'block', marginBottom: 4 }}>SECURITY NOTICE</span>
-                        Demo password: <code style={{ fontFamily: 'var(--fm)', color: 'var(--purple)', background: 'rgba(124, 58, 237, 0.1)', padding: '2px 6px', borderRadius: 4 }}>authority123</code>
-                    </div>
+
                 </div>
             </main>
         </div>

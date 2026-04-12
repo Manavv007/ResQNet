@@ -69,7 +69,8 @@ _HIGH_KEYWORDS = [
     "collapse", "demolition", "destruction", "blaze", "inferno",
     "accident", "crash", "collision", "wreck", "ambulance",
     "hazard", "danger", "toxic", "hazmat", "biohazard",
-    "emergency", "catastrophe", "disaster",
+    "emergency", "catastrophe", "disaster", "spill", "blast",
+    "lpg", "metro", "derailment", "railway",
 ]
 
 _MED_KEYWORDS = [
@@ -78,7 +79,8 @@ _MED_KEYWORDS = [
     "chemical", "gas", "leak", "spill", "pollution",
     "industrial", "warehouse", "factory", "plant",
     "rescue", "evacuate", "evacuation", "siren",
-    "storm", "lightning", "hail",
+    "storm", "lightning", "hail", "transport", "aircraft", "train",
+    "flyover", "scaffold", "crushed",
 ]
 
 _LOW_KEYWORDS = [
@@ -86,7 +88,8 @@ _LOW_KEYWORDS = [
     "crowd", "police", "firefighter", "paramedic", "military",
     "building", "structure", "bridge", "road", "highway",
     "water", "rain", "wind", "cloud",
-    "injured", "wound", "blood", "stretcher",
+    "injured", "wound", "blood", "stretcher", "structural",
+    "sinkhole", "crack", "wall",
 ]
 
 HAZARD_PASS_THRESHOLD = 2   # minimum score to accept the image

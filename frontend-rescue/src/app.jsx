@@ -78,10 +78,7 @@ function RescueApp() {
                             {loading ? "AUTHENTICATING..." : "ESTABLISH LINK"}
                         </button>
                     </div>
-                    <div className="info-banner" style={{ marginTop: "1.5rem", background: 'rgba(249, 115, 22, 0.05)', borderColor: 'var(--coral)' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', display: 'block', marginBottom: 4 }}>FIELD CREDENTIALS</span>
-                        Unit: <code style={{ fontFamily: 'var(--fm)', color: 'var(--coral)' }}>TEAM0001</code> · Passcode: <code style={{ fontFamily: 'var(--fm)', color: 'var(--coral)' }}>rescue123</code>
-                    </div>
+
                 </div>
             </main>
         </div>

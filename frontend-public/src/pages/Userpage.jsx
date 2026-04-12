@@ -4,13 +4,24 @@ import { API, apiFetch } from "../api";
 
 const SEV_COLOR = { critical: "var(--accent)", high: "var(--coral)", medium: "var(--warning)", low: "var(--success)" };
 
+const DISASTER_CONFIG = {
+    "Fire Accident": ["House Fire", "Shop / Market Fire", "Electrical Fire", "Vehicle Fire", "Forest / Outdoor Fire", "Other"],
+    "Building Collapse": ["Construction Failure", "Old Building Collapse", "Partial Structure Collapse", "Roof Collapse", "Scaffold Collapse", "Other"],
+    "Gas Leak": ["LPG Leakage", "Industrial Gas Leak", "Pipeline Leakage", "Oxygen Cylinder Leak", "Toxic Gas Exposure", "Other"],
+    "Chemical Hazard / Spill": ["Factory Chemical Leak", "Toxic Substance Exposure", "Chemical Spill on Road", "Laboratory Chemical Accident", "Hazardous Waste Leak", "Other"],
+    "Road Accident": ["Vehicle Collision", "Truck / Bus Accident", "Two-Wheeler Accident", "Hit and Run Case", "Vehicle Overturn", "Other"],
+    "Explosion / Blast": ["Cylinder Blast", "Industrial Explosion", "Electrical Explosion", "Firecracker Blast", "Fuel Tank Explosion", "Other"],
+    "Structural Damage": ["Bridge Crack / Damage", "Wall Collapse", "Road Sinkhole", "Flyover Damage", "Infrastructure Failure", "Other"],
+    "Transport Accidents": ["Train Derailment", "Metro Malfunction", "Railway Track Damage", "Signal Failure Incident", "Station Accident", "Other"]
+};
+
 export default function UserPage({ view, resetKey }) {
     return view === "track" ? <TrackReport /> : <ReportForm key={`report-${resetKey}`} />;
 }
 
 function ReportForm() {
     const [form, setForm] = useState({
-        disaster_type: "", location: "", latitude: "", longitude: "",
+        main_type: "", sub_type: "", location: "", latitude: "", longitude: "",
         severity: "", description: "", reporter_name: "", reporter_phone: ""
     });
     const [image, setImage] = useState(null);
@@ -36,8 +47,8 @@ function ReportForm() {
     };
 
     const handleSubmit = async () => {
-        if (!form.disaster_type || !form.location || !form.severity || !form.description) {
-            setError("Please fill all required fields."); return;
+        if (!form.main_type || !form.sub_type || !form.location || !form.severity || !form.description) {
+            setError("Please fill all required fields (including specific event type)."); return;
         }
 
         // Mobile number validation (+91 is optional, but core number must be 10 digits)
@@ -53,7 +64,17 @@ function ReportForm() {
 
         setSub(true); setError("");
         const fd = new FormData();
-        Object.entries(form).forEach(([k, v]) => v && fd.append(k, v));
+        
+        // Construct combined disaster type
+        const combinedType = `${form.main_type} > ${form.sub_type}`;
+        fd.append("disaster_type", combinedType);
+
+        Object.entries(form).forEach(([k, v]) => {
+            if (k !== "main_type" && k !== "sub_type" && v) {
+                fd.append(k, v);
+            }
+        });
+        
         if (image) fd.append("image", image);
         try {
             const res = await fetch(`${API}/api/reports`, { method: "POST", body: fd });
@@ -85,7 +106,7 @@ function ReportForm() {
                     onClick={() => {
                         setResult(null);
                         setForm({
-                            disaster_type: "", location: "", latitude: "", longitude: "",
+                            main_type: "", sub_type: "", location: "", latitude: "", longitude: "",
                             severity: "", description: "", reporter_name: "", reporter_phone: ""
                         });
                         setImage(null);
@@ -108,17 +129,22 @@ function ReportForm() {
                 <div className="form-grid">
 
                     <div className="form-group">
-                        <label>Event Type</label>
-                        <select value={form.disaster_type} onChange={e => set("disaster_type", e.target.value)}>
-                            <option value="">Select type...</option>
-                            <option value="flood">Flood</option>
-                            <option value="fire">Fire</option>
-                            <option value="earthquake">Earthquake</option>
-                            <option value="cyclone">Cyclone</option>
-                            <option value="landslide">Landslide</option>
-                            <option value="building_collapse">Building Collapse</option>
-                            <option value="chemical">Chemical Hazard</option>
-                            <option value="other">Other Incident</option>
+                        <label>Event Category</label>
+                        <select value={form.main_type} onChange={e => setForm(f => ({ ...f, main_type: e.target.value, sub_type: "" }))}>
+                            <option value="">Select category...</option>
+                            {Object.keys(DISASTER_CONFIG).map(cat => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Specific Type</label>
+                        <select value={form.sub_type} onChange={e => set("sub_type", e.target.value)} disabled={!form.main_type}>
+                            <option value="">{form.main_type ? "Select type..." : "Waiting for category..."}</option>
+                            {form.main_type && DISASTER_CONFIG[form.main_type].map(sub => (
+                                <option key={sub} value={sub}>{sub}</option>
+                            ))}
                         </select>
                     </div>
 
