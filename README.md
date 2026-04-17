@@ -89,22 +89,11 @@ docker-compose down
 | Database | SQLite (local) / DynamoDB (cloud) | Data Storage |
 | Containerization | Docker + Docker Compose | Packaging & Deployment |
 | Web Server | Nginx | Serve React + Proxy API |
-| Cloud (design) | AWS EC2, S3, SNS, DynamoDB | Production Infrastructure |
+| Cloud (design) | AWS S3, SNS, DynamoDB | Production Infrastructure |
 | Auth (design) | JWT Tokens | Secure Login |
 
 ---
 
-## ☁️ Cloud Deployment (AWS Free Tier)
-
-For production, this system maps to:
-- **EC2 t2.micro** → Runs Docker containers
-- **S3** → Stores uploaded images/videos
-- **DynamoDB** → Replaces SQLite for reports
-- **SNS** → Sends SMS/email alerts to rescue teams
-- **API Gateway** → Public endpoint for mobile app
-- **Lambda** → Serverless processing for alerts
-
----
 
 ## 📁 Project Structure
 

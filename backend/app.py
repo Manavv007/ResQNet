@@ -11,6 +11,9 @@ import bcrypt
 from botocore.exceptions import ClientError
 from functools import wraps
 
+from dotenv import load_dotenv
+load_dotenv()
+
 app = Flask(__name__)
 CORS(app)
 
@@ -18,13 +21,19 @@ AWS_REGION = os.environ.get("AWS_REGION", "ap-south-1")
 S3_BUCKET  = os.environ.get("S3_BUCKET",  "disaster-response-uploads")
 CLOUDFRONT_URL = os.environ.get("CLOUDFRONT_URL", "")
 
+authority_pw = os.environ.get("AUTHORITY_PASSWORD")
+rescue_pw = os.environ.get("RESCUE_PASSWORD")
+
+if not authority_pw or not rescue_pw:
+    raise ValueError("FATAL ERROR: AUTHORITY_PASSWORD and RESCUE_PASSWORD must be set in environment variables.")
+
 # Hash passwords at startup — plain text never stored or compared directly
 _AUTHORITY_PASSWORD_HASH = bcrypt.hashpw(
-    os.environ.get("AUTHORITY_PASSWORD", "authority123").encode(),
+    authority_pw.encode(),
     bcrypt.gensalt()
 )
 _RESCUE_PASSWORD_HASH = bcrypt.hashpw(
-    os.environ.get("RESCUE_PASSWORD", "rescue123").encode(),
+    rescue_pw.encode(),
     bcrypt.gensalt()
 )
 
@@ -411,7 +420,7 @@ def login():
 
     if role == "rescue":
         import sys
-        raw_pwd = os.environ.get("RESCUE_PASSWORD", "rescue123")
+        raw_pwd = os.environ.get("RESCUE_PASSWORD")
         pwd_match = check_password(password, _RESCUE_PASSWORD_HASH) or (password == raw_pwd)
         sys.stderr.write(f"DEBUG: Login Attempt - Role: rescue, Team: {team_id}, PwdMatch: {pwd_match}\n")
         sys.stderr.flush()
