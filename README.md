@@ -1,118 +1,142 @@
-# 🌪️ Smart Disaster Response System
+🌪️ ResQNet — Intelligent Disaster Response System
 
-A cloud-based disaster management system built with **React + Flask + Docker**.
+A real-time, cloud-native disaster response platform designed to enable rapid incident reporting, multi-role coordination, and efficient emergency handling using modern web and distributed system principles.
 
-## Team Members
-| Name | Role |
-|------|------|
-| Member 1 | Backend (Flask API) + Docker + GitHub Setup |
-| Member 2 | Frontend (React UI + Dashboard) |
-| Member 3 | Report + Architecture Diagram + Cloud Config |
+🎯 Key Features
 
----
+⚡ Real-time incident reporting
+📡 Live updates across multiple roles (Public / Authority / Rescue)
+📍 Geolocation-based reporting and tracking
+🧠 Scalable, stateless backend architecture
+🔐 Role-based access control via secure headers
+🐳 Fully containerized deployment using Docker
+☁️ Cloud-ready architecture (AWS services integration)
 
-## 🏗️ Architecture
+🏗️ System Architecture
 
-```
-User Browser
-    │
-    ▼
-Frontend (React) ──── Docker Container (nginx) ──── Port 3000
-    │
-    ▼  (API calls)
-Backend (Flask)  ──── Docker Container (python) ──── Port 5000
-    │
-    ▼
-SQLite Database  ──── Docker Volume (disaster-data)
-    │
-    ▼  (in cloud deployment)
-AWS S3           ──── Image/Video Storage
-AWS SNS          ──── Alert Notifications
-AWS DynamoDB     ──── Production Database
-```
+User (Browser)
+      │
+      ▼
+Frontend (React + Vite)
+      │
+      ▼
+Nginx (Docker Container)
+      │
+      ▼
+Backend API (Flask + Gunicorn)
+      │
+      ├── DynamoDB (Reports & Rate Limiting)
+      ├── S3 (Media Storage)
+      └── API Gateway WebSocket (Real-time updates)
+      
+⚙️ Tech Stack
 
----
+Layer	Technology	Purpose
 
-## 🚀 Running the Demo (Local)
+Frontend	React + Vite	Multi-role UI
+Backend	Flask + Gunicorn	REST API
+Real-Time	AWS API Gateway WebSockets + Lambda	Live communication
+Database	DynamoDB	Scalable NoSQL storage
+Storage	AWS S3	Image/video storage
+Auth	bcrypt + Role Tokens	Lightweight security
+DevOps	Docker + Docker Compose	Containerized deployment
+Web Server	Nginx (Alpine)	Static serving + routing
 
-### Prerequisites
-- Docker Desktop installed
-- Git
+🚀 Local Setup (One Command)
 
-### Steps
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/smart-disaster-response.git
-cd smart-disaster-response
-
-# 2. Start everything with one command
+Prerequisites
+Docker installed
+Git installed
+Run the project
+git clone https://github.com/Manavv007/ResQNet
+cd ResQNet
 docker-compose up --build
 
-# 3. Open in browser
-# Frontend: http://localhost:3000
-# Backend API: http://localhost:5000/api/health
-```
+Access the apps
 
-That's it. One command. ✅
+Service	URL
+Public App	http://localhost:3000
 
----
+Authority App	http://localhost:3001
 
-## 🛑 Stopping
+Rescue App	http://localhost:3002
 
-```bash
-docker-compose down
-```
+Backend API	http://localhost:5000/api/health
 
----
+📡 API Overview
 
-## 📡 API Endpoints
+Method	Endpoint	Description
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Health check |
-| GET | `/api/reports` | Get all reports |
-| GET | `/api/reports?status=pending` | Filter by status |
-| POST | `/api/reports` | Submit new report |
-| GET | `/api/reports/:id` | Get single report |
-| PATCH | `/api/reports/:id/status` | Update report status |
-| GET | `/api/stats` | Dashboard statistics |
+GET	/api/health	System health
+POST	/api/reports	Submit incident
+GET	/api/reports	Fetch reports
+PATCH	/api/reports/:id/status	Update status
+GET	/api/stats	Dashboard metrics
 
----
+🔐 Authentication Model
 
-## 🧰 Tech Stack
+The system uses a lightweight role-based access control mechanism:
 
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| Frontend | React + Vite | User Interface |
-| Backend | Python Flask | REST API |
-| Database | SQLite (local) / DynamoDB (cloud) | Data Storage |
-| Containerization | Docker + Docker Compose | Packaging & Deployment |
-| Web Server | Nginx | Serve React + Proxy API |
-| Cloud (design) | AWS S3, SNS, DynamoDB | Production Infrastructure |
-| Auth (design) | JWT Tokens | Secure Login |
+Requests include X-Role-Token header
+Tokens are validated using bcrypt hashing
+Ensures secure access without session overhead
 
----
+⚡ Real-Time Communication
 
+Implemented using WebSockets (API Gateway + Lambda)
+Stores active connections in DynamoDB
 
-## 📁 Project Structure
+Enables:
+Instant report updates
+Live dashboards
+Multi-user synchronization
 
-```
-smart-disaster-response/
+📈 Scalability Design
+Horizontal Scaling
+Stateless backend (no session storage)
+Data stored in DynamoDB/S3
+Any instance can handle any request
+Vertical Scaling
+EC2 instance upgrades supported
+Container-based architecture for easy replication
+
+🧠 System Design Highlights
+Microservices-inspired architecture
+Event-driven communication
+Cloud-native storage
+Containerized deployment
+Separation of concerns (frontend / backend / infra)
+
+📁 Project Structure
+
+ResQNet/
 ├── backend/
-│   ├── app.py              # Flask REST API
-│   ├── requirements.txt    # Python dependencies
-│   └── Dockerfile          # Backend container
-├── frontend/
-│   ├── src/
-│   │   ├── App.jsx         # Main app
-│   │   ├── App.css         # Styles
-│   │   └── components/
-│   │       ├── Dashboard.jsx   # Reports dashboard
-│   │       └── ReportForm.jsx  # Disaster report form
-│   ├── Dockerfile          # Frontend container (nginx)
-│   ├── nginx.conf          # Nginx configuration
-│   └── package.json
-├── docker-compose.yml      # Orchestrates all containers
+├── frontend-public/
+├── frontend-authority/
+├── frontend-rescue/
+├── docker-compose.yml
 └── README.md
-```
+⚠️ Note on GPS Feature
+
+Geolocation works only in secure environments:
+
+✅ Works on localhost
+❌ Blocked on HTTP (EC2 public IP)
+✅ Requires HTTPS (production setup)
+
+🚀 Future Improvements
+
+HTTPS setup using Cloudflare / Nginx
+Load balancer + auto-scaling
+JWT-based authentication
+Map integration (live tracking)
+Notification system enhancements
+
+⭐ Final Note
+
+This project demonstrates:
+
+Real-world system design
+Cloud-native thinking
+Scalable architecture
+Production-level deployment practices
